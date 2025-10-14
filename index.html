@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="index.css">
+    <title>Dark vs Light Mode - Productivity Tasks</title>
+</head>
+<body data-theme="light">
+    <div class="container">
+        <h1>Productivity Tasks - Dark vs Light Mode</h1>
+        <p class="lead">Use this page to run two short tasks (Find & click; Reading + Comprehension). Toggle mode, fill participant info, run tasks, then download CSV results.</p>
+
+        <div class="card">
+            <div style="margin-top:10px" class="row"></div>
+                <div class="col">
+                    <label>Device</label>
+                    <select id="device">
+                        <option>Laptop</option><option>Tablet</option><option>SmartPhone</option><option>Other</option>                        
+                    </select>
+                </div>
+                <div class="col">
+                    <label>Ambient lighting</label>
+                    <select id="ambient">
+                        <option>Bright (office)</option><option>Dim</option><option>Dark</option>
+                    </select>
+                </div>
+            </div>
+            <div style="margin-top:10px" class="row">
+                <div class="col">
+                    <label>Screen brightness (%)</label>
+                    <input id="brightness" type="number" min="0" max="100" value="80"/>
+                </div>
+                <div class="col">
+                    <label>Session mode</label>
+                    <select id="sessionMode">
+                        <option>Light mode</option><option>Dark mode</option>
+                    </select>
+            </div>
+        </div>
+        <div style="margin-top:10px" class="flex">
+            <button id="applyModeBtn">Apply Mode</button>
+            <button id="clearBtn" class="ghost">Clear All</button>
+            <div style="flex:1"></div>
+            <div class="small-note">Tip: set the device to the indicated mode, then press <b>Apply Mode</b>.</div>
+        </div>
+    </div>
+
+    <!-- Task 1: Find and Click -->
+     <div class="card"id="task1Card">
+        <h2 style="font-size:1rem;margin:0 0 8px">Task1 - find & Click (targets)</h2>
+        <p class="small">You will see a grid of words. A short list of target words is shown - click each targetas qauickly and accurately as you can. Click <b>Start Task 1</b> to begin.</p>
+
+        <div style="margin-top:8px" class="flex">
+            <button id="startTask1">Start Task 1</button>
+            <button id="finishTask1" class="ghost" disabled>Finish Task 1</button>
+            <div style="flex:1"></div>
+            <div id="task1Timer" class="status">Time: 0.00 s</div>
+        </div>
+
+        <div stule="margin-top:12px" id="targetsWrap" class="hidden">
+            <div style="display:flex; align-items:center; gap:12px;; margin-bottom:8px">
+                <div><strong>Targets:</strong></div>
+                <div id="targetsList" style="display:flex; gap:8px; flex-wrap:wrap"></div>
+            </div>
+
+            <div class="grid" id="wordGrid" aria-live="polite"></div>
+
+            <div id="task1Status" class="small-note">Selected: 0</div>
+        </div>
+     </div>
+
+    <!-- Task 2: Reading and Comprehension -->
+     <div class="card" id="task2Card">
+        <h2 style="font-size:1rem;margin:0 0 8px">Task 2 - Reading & Comprehension</h2>
+        <p class="small">Read the passage carefully. Press <b>Start Reading</b> to begin timing, then press <b>Done Reading</b> when finished. Answer the 3 comprehension questions that follow.</p>
+
+        <div class="flex">
+            <button id="startReading">Start Reading</button>
+            <button id="doneReading" class="ghost" disabled>Done Reading</button>
+            <div style="flex:1"></div>
+            <div id="readingTimer" class="status">Reading Time: 0.00 s</div>
+        </div>
+
+        <div id="passageWrap" class="hidden" style="margin-top:12px">
+            <div class="card" style="background:transparent;padding: 10px;border-radius:8px;">
+                <div id="passage" style="line-height:1.5;max-height:220px; overflow:auto;">
+                    <strong>Passage:</strong>
+                    <p>
+                        Digital interfaces can use different display modes to alter contrast and luminance.
+                        Some users prefer dark mode in dim environments while others prefer light mode during day time use.
+                        Display setting such as brightness and contrast interact with ambient lighting to influence visual comfort.
+                        Designers must balance readability and comfort when choosing default modes.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div id="comprehensionWrap" class="hidden" style="margin-top:12px">
+            <form id="comprehensionForm">
+                <div style="margin-bottom:8px">
+                    <label><strong>1.</strong> According to the passage, dark mode is often preferred in which environment?</label>
+                    <div><label><input type="radio" name="q1" value="A">Daytime outdoor</label></div>
+                    <div><label><input type="radio" name="q1" value="B">Dim environments</label></div>
+                    <div><label><input type="radio" name="q1" value="C">High-glare offices</label></div>
+                </div>
+
+                <div style="margin-bottom:8px">
+                    <label><strong>2.</strong>Which display settings interact with ambient lighting?</label>
+                    <div><label><input type="radio" name="q2" value="A">Color palette only</label></div>
+                    <div><label><input type="radio" name="q2" value="B">Brightness and contrast</label></div>
+                    <div><label><input type="radio" name="q2" value="C">Font choice only</label></div>
+                </div>
+
+                <div style="margin-bottom:8px">
+                    <label><strong>3.</strong>What must designers balance when choosing default modes?</label>
+                    <div><label><input type="radio" name="q3" value="A">Readability and comfort</label></div>
+                    <div><label><input type="radio" name="q3" value="B">Cost and battery life</label></div>
+                    <div><label><input type="radio" name="q3" value="C">Number of colors</label></div>
+                </div>
+
+                <div class="flex">
+                    <button id="submitComprehension" type="button" class="ghost" disabled>Submit Answers</button>
+                    <div style="flex:1"></div>
+                    <div id="compStatus" class="small-note"></div>
+                </div>
+            </form>
+        </div>
+     </div>
+
+     <!-- Results / Export -->
+     <div class="card center">
+        <h3 style="margin:0 0 8px">Collected Results</h3>
+        <!-- <pre id="resultsPre"></pre> -->
+        <table id="resultsTable" border="1" style="width:100%; border-collapse:collapse; text-align:center; font-size:0.9rem;">
+            <thead>
+                <tr style="background-color:var(--card); font-weight: 600;">
+                    <th>#</th>
+                    <th>Participant</th>
+                    <th>Mode</th>
+                    <th>Device</th>
+                    <th>Ambient</th>
+                    <th>Brightness (%)</th>
+                    <th>Task 1 Duration (s)</th>
+                    <th>Task 1 Found</th>
+                    <th>Task 1 Errors</th>
+                    <th>Reading Time</th>
+                    <th>Comprehension Score</th>
+                    <th>Timestamp</th>
+                </tr>
+            </thead>
+            <tbody id="resultsBody">
+                <tr><td colspan="12" style="color:gray;">No results yet.</td></tr>
+            </tbody>
+        </table>
+        <div style="margin-top:8px" class="flex">
+            <button id="downloadCsv" disabled>Download CSV</button>
+            <button id="resetResults" class="ghost">Reset</button>
+        </div>
+     </div>
+
+     <footer class="center">Created for class research - save this page as <code>tasks.html</code> and open locally. Do not collect personal identifiable information.</footer>
+    
+</body>
+<script src="index.js"></script>
+</html>
