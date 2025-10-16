@@ -221,48 +221,116 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     
     // Submit comprehension
+    // document.getElementById('submitComprehension').addEventListener('click', () => {
+    //     //Check answers
+    //     const f = document.getElementById('comprehensionForm');
+    //     const a1 = f.q1.value;
+    //     const a2 = f.q2.value;
+    //     const a3 = f.q3.value;
+    //     if(!a1 || !a2 || !a3) { alert('Please answer all comprehension questions.'); return;}
+    
+    //     const correct = (a1 === 'B') + (a2 === 'B') + (a3 === 'A');
+    //     state.task2.compCorrect = correct;
+    
+    //     const participant = state.currentId;
+    //     const mode = document.getElementById('sessionMode').value;
+    //     const device = document.getElementById('device').value;
+    //     const ambient = document.getElementById('ambient').value;
+    //     const brightness = document.getElementById('brightness').value;
+    
+    //     const task2Result = {
+    //         participant, device, ambient, brightness, mode,
+    //         reading_time_s: state.task2.readingDuration,
+    //         comp_correct: state.task2.compCorrect
+    //     };
+    
+    //     // state.results.push({phase:'task2', data:task2Result, timestamp: new Date().toISOString()});
+    //     const existing = state.results.find(r => r.participant === state.currentId);
+    //     if(existing) {
+    //         existing.data = { ...existing.data, ...task2Result };
+    //         existing.timestamp = new Date().toISOString();
+    //     } else {
+    //         state.results.push({
+    //             participant:state.currentId,
+    //             data: task2Result,
+    //             timestamp: new Date().toISOString()
+    //         });
+    //     }
+    //     updateResultsPre();
+    //     sendToGoogleSheet(state.results[state.results.length - 1].data);
+    //     document.getElementById('compStatus').textContent = `Score: ${correct} / 3`;
+    //     document.getElementById('submitComprehension').disabled = true;
+    //     // document.getElementById('startReading').disabled = false;
+    //     // document.getElementById('downloadCsv').disabled = false;
+
+    //     const task1Card = document.getElementById('task1Card');
+    //     const task2Card = document.getElementById('task2Card');
+    //     const resultsCard = document.getElementById('resultsCard');
+    //     const thankYouCard = document.getElementById('thankYouCard');
+
+    //     task1Card.classList.add('hidden');
+    //     task2Card.classList.add('hidden');
+    //     resultsCard.classList.add('hidden');
+    //     thankYouCard.classList.remove('hidden');
+
+    //     window.scrollTo(0,0);
+    
+    // });
+
+    // Replace your old listener with this one
     document.getElementById('submitComprehension').addEventListener('click', () => {
-        //Check answers
+        // 1. Check answers and prevent submission if incomplete
         const f = document.getElementById('comprehensionForm');
         const a1 = f.q1.value;
         const a2 = f.q2.value;
         const a3 = f.q3.value;
-        if(!a1 || !a2 || !a3) { alert('Please answer all comprehension questions.'); return;}
-    
+        if (!a1 || !a2 || !a3) {
+            alert('Please answer all comprehension questions.');
+            return;
+        }
+
+        // 2. Calculate score and update final state
         const correct = (a1 === 'B') + (a2 === 'B') + (a3 === 'A');
         state.task2.compCorrect = correct;
-    
+
         const participant = state.currentId;
         const mode = document.getElementById('sessionMode').value;
         const device = document.getElementById('device').value;
         const ambient = document.getElementById('ambient').value;
         const brightness = document.getElementById('brightness').value;
-    
+
         const task2Result = {
             participant, device, ambient, brightness, mode,
             reading_time_s: state.task2.readingDuration,
             comp_correct: state.task2.compCorrect
         };
-    
-        // state.results.push({phase:'task2', data:task2Result, timestamp: new Date().toISOString()});
+
         const existing = state.results.find(r => r.participant === state.currentId);
-        if(existing) {
+        if (existing) {
             existing.data = { ...existing.data, ...task2Result };
             existing.timestamp = new Date().toISOString();
-        } else {
-            state.results.push({
-                participant:state.currentId,
-                data: task2Result,
-                timestamp: new Date().toISOString()
-            });
         }
-        updateResultsPre();
-        sendToGoogleSheet(state.results[state.results.length - 1].data);
-        document.getElementById('submitComprehension').disabled = true;
-        document.getElementById('startReading').disabled = false;
-        document.getElementById('downloadCsv').disabled = false;
+        // Update the UI with the final score
         document.getElementById('compStatus').textContent = `Score: ${correct} / 3`;
-    
+        document.getElementById('submitComprehension').disabled = true;
+
+        // 3. IMMEDIATELY update the UI to show the "Thank You" message
+        const task1Card = document.getElementById('task1Card');
+        const task2Card = document.getElementById('task2Card');
+        const resultsCard = document.getElementById('resultsCard');
+        const thankYouCard = document.getElementById('thankYouCard');
+
+        task1Card.classList.add('hidden');
+        task2Card.classList.add('hidden');
+        resultsCard.classList.add('hidden');
+        thankYouCard.classList.remove('hidden');
+
+        window.scrollTo(0, 0);
+
+        // 4. FINALLY, send the data in the background
+        // This now runs last, so even if it fails, the user experience is complete.
+        updateResultsPre(); // Update the (now hidden) table one last time
+        sendToGoogleSheet(existing.data);
     });
     
     // Display Results
@@ -295,95 +363,76 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    async function sendToGoogleSheet(data) {
+    // Send to Google Sheets
+    function sendToGoogleSheet(data) {
         const url = "https://script.google.com/macros/s/AKfycbzuzRi14jXFLAzEA0a3igY26Kh4TKKvSftDEUmcOvUnGX1cJDYXSr69cSTwYtaPhQpq/exec";
         console.log('Sending data to Google Sheets:', data);
-        try {
-            const response = await fetch(url, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(data)
-            });
-            const result = await response.text();
-            console.log('Response from Google Sheets:', result);
-        } catch (error) {
-            console.error('Error sending data to Google Sheets:', error);
-        }
+        
+        // Fire-and-forget the request without awaiting a response
+        fetch(url, {
+            method: 'POST',
+            mode: 'no-cors', 
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        }).catch(error => console.error('Error sending data:', error)); // Optional: Log errors
     }
     
-    // CSV Report
-    function toCSVRow(vals) {
-        return vals.map(v => {
-            if( v === null | v === undefined) return '';
-            const s = String(v).replace(/"/g, '""');
-            return `"${s}`;
+    // // CSV Report
+    // function toCSVRow(vals) {
+    //     return vals.map(v => {
+    //         if( v === null | v === undefined) return '';
+    //         const s = String(v).replace(/"/g, '""');
+    //         return `"${s}`;
     
-        }).join(',');
-    }
+    //     }).join(',');
+    // }
     
-    document.getElementById('downloadCsv').addEventListener('click', () => {
-        if(!state.results || state.results.length === 0) {
-            alert('No data to download.');
-            return;
-        }
-        const header = ['participant', 'device', 'ambient', 'brightness_pct', 'mode', 'phase', 'task1_duration_s', 'task1_found', 'task1_errors', 'reading_time_s', 'comp_correct', 'timestamp'];
-        const rows = [header];
-        state.results.forEach(r => {
-            const d = r.data || {};
-            const row = [
-                d.participant || '',
-                d.device || '',
-                d.ambient || '',
-                d.brightness || '',
-                d.mode || '',
-                r.phase || '',
-                d.task1_duration_s || '',
-                d.task1_found || '',
-                d.task1_errors || '',
-                d.reading_time_s || '',
-                d.comp_correct || '',
-                r.timestamp || '',
-            ];
-            rows.push(row);
-        });
+    // document.getElementById('downloadCsv').addEventListener('click', () => {
+    //     if(!state.results || state.results.length === 0) {
+    //         alert('No data to download.');
+    //         return;
+    //     }
+    //     const header = ['participant', 'device', 'ambient', 'brightness_pct', 'mode', 'phase', 'task1_duration_s', 'task1_found', 'task1_errors', 'reading_time_s', 'comp_correct', 'timestamp'];
+    //     const rows = [header];
+    //     state.results.forEach(r => {
+    //         const d = r.data || {};
+    //         const row = [
+    //             d.participant || '',
+    //             d.device || '',
+    //             d.ambient || '',
+    //             d.brightness || '',
+    //             d.mode || '',
+    //             r.phase || '',
+    //             d.task1_duration_s || '',
+    //             d.task1_found || '',
+    //             d.task1_errors || '',
+    //             d.reading_time_s || '',
+    //             d.comp_correct || '',
+    //             r.timestamp || '',
+    //         ];
+    //         rows.push(row);
+    //     });
     
-        const csvContent = rows.map(r => toCSVRow(r)).join('\n');
-        const blob = new Blob([csvContent], {type: 'text/csv;charset-utf-8;'});
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url; a.download = `${document.getElementById('participant')}_results.csv`;
-        document.body.appendChild(a); a.click(); a.remove();
-        URL.revokeObjectURL(url);
-    });
-
-    const submitComprehensionBtn = document.getElementById('submitComprehension');
-    submitComprehensionBtn.addEventListener('click', () => {
-        const task1Card = document.getElementById('task1Card');
-        const task2Card = document.getElementById('task2Card');
-        const resultsCard = document.getElementById('resultsCard');
-        const thankYouCard = document.getElementById('thankYouCard');
-
-        task1Card.classList.add('hidden');
-        task2Card.classList.add('hidden');
-        resultsCard.classList.add('hidden');
-        thankYouCard.classList.remove('hidden');
-
-        window.scrollTo(0, 0);
-    })
-    
+    //     const csvContent = rows.map(r => toCSVRow(r)).join('\n');
+    //     const blob = new Blob([csvContent], {type: 'text/csv;charset-utf-8;'});
+    //     const url = URL.createObjectURL(blob);
+    //     const a = document.createElement('a');
+    //     a.href = url; a.download = `${document.getElementById('participant')}_results.csv`;
+    //     document.body.appendChild(a); a.click(); a.remove();
+    //     URL.revokeObjectURL(url);
+    // });    
     
     //reset results
-    document.getElementById('resetResults').addEventListener('click', () => {
-        if(!confirm('Reset collected results for this participant?')) return;
-        state.results = [];
-        state.task1 = {startedAt: null, finishedAt: null, duration: null, found:0, errors:0};
-        state.task2 = {readingStartedAt:null, readingFinishedAt:null, readingDuration: null, compCorrect:0};
-        updateResultsPre();
-        document.getElementById('downloadCsv').disabled = true;
-        document.getElementById('submitComprehension').disabled = true;
-        document.getElementById('startReading').disabled = false;
-    });
+    // document.getElementById('resetResults').addEventListener('click', () => {
+    //     if(!confirm('Reset collected results for this participant?')) return;
+    //     state.results = [];
+    //     state.task1 = {startedAt: null, finishedAt: null, duration: null, found:0, errors:0};
+    //     state.task2 = {readingStartedAt:null, readingFinishedAt:null, readingDuration: null, compCorrect:0};
+    //     updateResultsPre();
+    //     document.getElementById('downloadCsv').disabled = true;
+    //     document.getElementById('submitComprehension').disabled = true;
+    //     document.getElementById('startReading').disabled = false;
+    // });
     
     //small UX: when sessio mode selection changes, auto-apply
     document.getElementById('sessionMode').addEventListener('change', (e) => setTheme(e.target.value));

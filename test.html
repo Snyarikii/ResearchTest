@@ -129,9 +129,8 @@
      </div>
 
      <!-- Results / Export -->
-     <div class="card center">
+    <div class="card center" id="resultsCard">
         <h3 style="margin:0 0 8px">Collected Results</h3>
-        <!-- <pre id="resultsPre"></pre> -->
         <table id="resultsTable" border="1" style="width:100%; border-collapse:collapse; text-align:center; font-size:0.9rem;">
             <thead>
                 <tr style="background-color:var(--card); font-weight: 600;">
@@ -153,13 +152,14 @@
                 <tr><td colspan="12" style="color:gray;">No results yet.</td></tr>
             </tbody>
         </table>
-        <div style="margin-top:8px" class="flex">
-            <button id="downloadCsv" disabled>Download CSV</button>
-            <button id="resetResults" class="ghost">Reset</button>
-        </div>
-     </div>
+    </div> 
+    <div class="card center hidden" id="thankYouCard">
+        <h2 style="font-size:1.8rem; color: var(--accent);">Thank You! 👋</h2>
+        <p class="lead">Your responses have been successfully recorded.</p>
+        <p>Your contribution is greatly appreciated and will help us design better user interfaces. You may now close this window.</p>
+    </div>
 
-     <footer class="center">Created for class research - save this page as <code>tasks.html</code> and open locally. Do not collect personal identifiable information.</footer>
+    <footer class="center">Created for class research </footer>
     
 </body>
 <script src="index.js"></script>
