@@ -356,6 +356,21 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.appendChild(a); a.click(); a.remove();
         URL.revokeObjectURL(url);
     });
+
+    const submitComprehensionBtn = document.getElementById('submitComprehension');
+    submitComprehensionBtn.addEventListener('click', () => {
+        const task1Card = document.getElementById('task1Card');
+        const task2Card = document.getElementById('task2Card');
+        const resultsCard = document.getElementById('resultsCard');
+        const thankYouCard = document.getElementById('thankYouCard');
+
+        task1Card.classList.add('hidden');
+        task2Card.classList.add('hidden');
+        resultsCard.classList.add('hidden');
+        thankYouCard.classList.remove('hidden');
+
+        window.scrollTo(0, 0);
+    })
     
     
     //reset results

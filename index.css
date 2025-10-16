@@ -466,3 +466,41 @@ footer {
         text-align: center;
     }
 }
+
+/* ========================================
+   9. Thank You Card
+   ======================================== */
+
+#thankYouCard {
+    /* Make the card stand out with an accent-colored border */
+    border: 2px solid var(--accent);
+
+    /* Add more vertical padding for a spacious, final feel */
+    padding-top: 50px;
+    padding-bottom: 50px;
+
+    /* Add a subtle fade-in and slide-up animation */
+    animation: fadeInUp 0.5s ease-out;
+}
+
+#thankYouCard h2 {
+    /* The h2 already has the accent color from the inline style */
+    margin-bottom: 1rem;
+}
+
+#thankYouCard .lead {
+    /* Make the lead text slightly bolder */
+    font-weight: 600;
+}
+
+/* Define the animation */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
