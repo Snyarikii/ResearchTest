@@ -1,12 +1,21 @@
-:root{
-      --bg:#ffffff; --fg:#111111; --card:#f4f4f8; --accent:#1a73e8;
+/* :root{
+      --bg:#ffffff;
+      --fg:#111111; 
+      --card:#f4f4f8; 
+      --accent:#1a73e8;
     }
     [data-theme="dark"]{
-      --bg:#0f1114; --fg:#e6eef8; --card:#111418; --accent:#58a6ff;
+      --bg:#0f1114; 
+      --fg:#e6eef8; 
+      --card:#111418; 
+      --accent:#58a6ff;
     }
+
     body{
       font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial;
-      background:var(--bg); color:var(--fg); margin:0; padding:20px;
+      background:var(--bg); 
+      color:var(--fg); 
+      margin:0; padding:20px;
       -webkit-font-smoothing:antialiased;
     }
     .container{max-width:980px;margin:0 auto;}
@@ -144,4 +153,316 @@
     [data-theme='dark'] table {
         background-color: #121416;
         color: #e6eef8;
+    } */
+
+/* ========================================
+   1. Theme Variables & Global Styles
+   ======================================== */
+
+:root {
+    --bg: #f8f9fa;
+    --fg: #212529;
+    --card: #ffffff;
+    --accent: #007bff;
+    --border-color: #dee2e6;
+    --shadow-color: rgba(0, 0, 0, 0.08);
+    --success-bg: #d4edda;
+    --success-border: #c3e6cb;
+    --error-bg: #f8d7da;
+    --error-border: #f5c6cb;
+}
+
+[data-theme="dark"] {
+    --bg: #121212;
+    --fg: #e9ecef;
+    --card: #1e1e1e;
+    --accent: #4dabf7;
+    --border-color: #495057;
+    --shadow-color: rgba(0, 0, 0, 0.4);
+    --success-bg: #133420;
+    --success-border: #2f8b5c;
+    --error-bg: #3c1a20;
+    --error-border: #d04f4f;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--fg);
+    margin: 0;
+    padding: 24px;
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+.container {
+    max-width: 980px;
+    margin: 0 auto;
+}
+
+/* ========================================
+   2. Typography
+   ======================================== */
+
+h1 {
+    margin: 0 0 8px;
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+p.lead {
+    margin: 0 0 24px;
+    font-size: 1.1rem;
+    color: #6c757d;
+}
+
+[data-theme="dark"] p.lead {
+    color: #adb5bd;
+}
+
+.small, .small-note {
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+
+[data-theme="dark"] .small, [data-theme="dark"] .small-note {
+    color: #adb5bd;
+}
+
+.status {
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+/* ========================================
+   3. Layout & Cards
+   ======================================== */
+
+.card {
+    background: var(--card);
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px var(--shadow-color);
+    margin-bottom: 20px;
+    border: 1px solid var(--border-color);
+    transition: background 0.3s ease, border-color 0.3s ease;
+}
+
+.row {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.col {
+    flex: 1;
+    min-width: 200px;
+}
+
+.flex {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+/* ========================================
+   4. Forms & Interactive Elements
+   ======================================== */
+
+label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+}
+
+input[type="text"],
+input[type="number"],
+select,
+textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    background: var(--bg);
+    color: var(--fg);
+    box-sizing: border-box;
+    font-size: 1rem;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+input[type="text"]:focus-visible,
+input[type="number"]:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 25%, transparent);
+}
+
+button {
+    background: var(--accent);
+    color: #ffffff;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+button:hover {
+    background: color-mix(in srgb, var(--accent) 85%, black);
+}
+
+button:active {
+    transform: scale(0.98);
+}
+
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+button.ghost {
+    background: transparent;
+    color: var(--fg);
+    border: 1px solid var(--border-color);
+}
+
+button.ghost:hover {
+    background: color-mix(in srgb, var(--accent) 15%, transparent);
+    border-color: var(--accent);
+}
+
+/* ========================================
+   5. Task-Specific Components
+   ======================================== */
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 8px;
+}
+
+.word-btn {
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    background: var(--card);
+    text-align: center;
+    color: var(--fg);
+    transition: all 0.2s ease;
+}
+
+.word-btn:hover {
+    border-color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 10%, transparent);
+}
+
+.word-btn.found {
+    background: var(--success-bg);
+    border-color: var(--success-border);
+    font-weight: 600;
+}
+
+.word-btn.error {
+    background: var(--error-bg);
+    border-color: var(--error-border);
+}
+
+#passage {
+    background: var(--bg);
+    padding: 16px;
+    border-radius: 8px;
+}
+
+/* ========================================
+   6. Results Table
+   ======================================== */
+
+#resultsTable {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 0.9rem;
+    margin-top: 16px;
+}
+
+#resultsTable th,
+#resultsTable td {
+    padding: 10px 12px;
+    border: 1px solid var(--border-color);
+}
+
+#resultsTable thead th {
+    background-color: var(--bg);
+    font-weight: 700;
+    text-align: left;
+}
+
+#resultsTable tbody tr:nth-child(even) {
+    background-color: color-mix(in srgb, var(--border-color) 20%, transparent);
+}
+
+/* ========================================
+   7. Utility & Footer
+   ======================================== */
+
+.hidden {
+    display: none;
+}
+
+.center {
+    text-align: center;
+}
+
+footer {
+    font-size: 0.85rem;
+    color: #6c757d;
+    margin-top: 30px;
+    text-align: center;
+}
+
+[data-theme="dark"] footer {
+    color: #adb5bd;
+}
+
+/* ========================================
+   8. Responsive Design
+   ======================================== */
+
+@media (max-width: 768px) {
+    body {
+        padding: 16px;
     }
+    h1 {
+        font-size: 1.75rem;
+    }
+    .grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    .flex {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .small-note {
+        text-align: center;
+    }
+}

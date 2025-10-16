@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Step 1: Survey - Dark Mode Study</title>
+    <style>
+        /* All CSS from the previous version remains the same */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #f4f7f9; color: #333; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; }
+        .container { background-color: #ffffff; padding: 40px; border-radius: 12px; box-shadow: 0 8px 16px rgba(0,0,0,0.1); text-align: center; max-width: 800px; width: 100%; }
+        h1 { color: #1a202c; margin-bottom: 0.5rem; }
+        p { font-size: 1.1rem; line-height: 1.6; color: #555; margin-bottom: 2rem; }
+        iframe { border-radius: 8px; }
+        .confirmation-step { margin-top: 2rem; padding: 20px; border-top: 1px solid #e2e8f0; }
+        label[for="completionCode"] { font-size: 1.1rem; font-weight: 500; color: #333; display: block; margin-bottom: 1rem; }
+        #completionCodeInput {
+            padding: 10px;
+            font-size: 1rem;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            width: 200px;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        #proceedButton { background-color: #007bff; color: #ffffff; border: none; padding: 15px 30px; font-size: 1rem; font-weight: bold; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; }
+        #proceedButton:disabled { background-color: #a0cffc; cursor: not-allowed; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Step 1: Preliminary Survey</h1>
+        <p>Complete the form below. A completion code will appear inside the form once you submit.</p>
+
+        <iframe id="googleform" src="" width="100%" height="600" frameborder="0">Loading…</iframe>
+        
+        <div class="confirmation-step">
+            <label for="completionCodeInput">Enter the Completion Code to Continue</label>
+            <input type="text" id="completionCodeInput" placeholder="e.g., CODE-123">
+            <br>
+            <button id="proceedButton" disabled>Proceed to Test →</button>
+        </div>
+    </div>
+    
+    <script>
+        const participantId = sessionStorage.getItem('participantId');
+        const googleFormIframe = document.getElementById('googleform');
+        const completionCodeInput = document.getElementById('completionCodeInput');
+        const proceedButton = document.getElementById('proceedButton');
+
+        // --- Part 1: Define the secret completion code ---
+        // THIS MUST EXACTLY MATCH THE CODE IN YOUR GOOGLE FORM CONFIRMATION
+        const correctCode = "BLUE-SKY-7";
+
+        // --- Part 2: Load the form ---
+        if (participantId) {
+            const formBaseUrl = "https://docs.google.com/forms/d/e/1FAIpQLSdEUOankPqn8ZkfCiCCesjad1y3Phs3RLD2Rk8M9WIhyjn1JA/viewform?embedded=true";
+            const entryId = "entry.1004557232";
+            const prefilledUrl = `${formBaseUrl}&${entryId}=${participantId}`;
+            googleFormIframe.src = prefilledUrl;
+        } else {
+            alert("Could not find participant ID. Please start again.");
+            window.location.href = "/intro.html";
+        }
+
+        // --- Part 3: Check the code as the user types ---
+        completionCodeInput.addEventListener('input', function() {
+            // Trim whitespace and convert to uppercase to make matching easier
+            const enteredCode = this.value.trim().toUpperCase();
+            
+            // Compare the entered code with the correct code
+            if (enteredCode === correctCode.toUpperCase()) {
+                proceedButton.disabled = false; // Enable the button
+            } else {
+                proceedButton.disabled = true; // Keep it disabled
+            }
+        });
+
+        // --- Part 4: Navigate to the test page ---
+        proceedButton.addEventListener('click', () => {
+            window.location.href = "/index.html";
+        });
+    </script>
+</body>
+</html>

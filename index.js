@@ -7,16 +7,11 @@ document.addEventListener('DOMContentLoaded', () => {
         results: []
     };
     
-    
-    // function generateParticipantId() {
-    //     return "P" + Date.now();
-
-    // }
-    // state.currentId = generateParticipantId();
-    // console.log('Participant ID:', state.currentId);
-    const urlParams = new URLSearchParams(window.location.search);
-    const participantId = urlParams.get('pid') || "Anonymous";
-    state.currentId = participantId;
+    const participantId = sessionStorage.getItem('participantId');
+    if(!participantId) {
+        console.error("No participant ID found!");
+    }
+    state.currentId = participantId || "Anonymous";
 
     function setTheme(mode) {
         document.body.setAttribute('data-theme', mode === 'Dark mode' ? 'dark' : 'light');
@@ -301,7 +296,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function sendToGoogleSheet(data) {
-        const url = "https://script.google.com/macros/s/AKfycbyELQ21rEFR9_nN9CNT2NWXlxUs1lmYuNcDYCb1ZRkin22pzrrB5bDiVroZxEjlT81N/exec";
+        const url = "https://script.google.com/macros/s/AKfycbzuzRi14jXFLAzEA0a3igY26Kh4TKKvSftDEUmcOvUnGX1cJDYXSr69cSTwYtaPhQpq/exec";
+        console.log('Sending data to Google Sheets:', data);
         try {
             const response = await fetch(url, {
                 method: 'POST',
@@ -309,7 +305,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(data)
             });
-            console.log('Data sent to Google Sheets');
+            const result = await response.text();
+            console.log('Response from Google Sheets:', result);
         } catch (error) {
             console.error('Error sending data to Google Sheets:', error);
         }
